@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -43,6 +45,16 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void clearFavorites(){ //Creo el metodo para vaciar lista favoritos y posteriormente llamo notifyListeners()
+    favorites.clear();
+    notifyListeners();
+  }
+
+  void deleteLast(){ //Creo el metodo para remover ultimo favorito y posteriormente llamo notifyListeners()
+    favorites.removeLast();
+    notifyListeners();
+  }
 }
 
 // ...
@@ -68,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 2:
         page = RotatedBox(quarterTurns: 3,child: FavoritesPage()); //llamo como hijo a FavoritesPage(), que es quien debo rotar
-                          
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -118,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-// ...
+// ..
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -143,6 +154,36 @@ class FavoritesPage extends StatelessWidget {
             leading: Icon(Icons.favorite),
             title: Text(pair.asLowerCase),
           ),
+
+          Align( //Creo Aling para mis dos nuevos botones y alineo en el centro
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [ //creo dos hijos de align, el cual son dos botones nuevos
+                SizedBox(
+                  width: 150,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      appState.clearFavorites(); //Llamo al metodo clearFavorites() creado en mi appState, el cual se activa una vez clickeado el boton
+                    },
+                    icon: Icon(Icons.delete),
+                    label: Text('Delete all'), //Creo el delete all, que vacia la lista favorites
+                  ),
+                ),
+                SizedBox(width: 16), //Espacio entre los botones
+                SizedBox(
+                  width: 150,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      appState.deleteLast(); //Llamo a mi metodo void creado en MyAppState una ves clickeado el boton delete last 
+                    },
+                    icon: Icon(Icons.remove_outlined),
+                    label: Text('Delete Last'), 
+                  ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -192,6 +233,8 @@ class GeneratorPage extends StatelessWidget {
     );
   }
 }
+
+
 
 // ...
 class BigCard extends StatelessWidget {
